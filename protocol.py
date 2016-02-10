@@ -139,17 +139,19 @@ PAGE_CFG = cst.BitStruct('page_cfg',
                          cst.Flag('bold_joins_12'),
                          )
 
-CMD_SEQ = cst.Sequence('_cmd', cst.Magic('\x1c'),
-                       cst.Enum(cst.Byte('cmd'),
-                                FLASH='F', ENLARGE='E',
-                                RED='R', GREEN='G', YELLOW='Y',
-                                MULTICOLOUR='M', DEFAULT='D'))
+CMD_SEQ = cst.Struct('_cmd', 
+                      cst.Magic('\x1c'),
+                      cst.Enum(cst.Byte('cmd'),
+                                FLASH   = 70, 
+                                ENLARGE = 69, 
+                                DEFAULT = 68))
 
 PAGE = cst.Struct('page',
                   PAGE_IDX,
                   cst.Embed(TEMPO),
                   cst.Embed(PAGE_FUNC),
                   cst.Embed(PAGE_CFG),
+                  cst.Embed(CMD_SEQ),
                   cst.CString('body', terminators='\x04'))
 
 DATETIME_BODY = cst.Struct('datetime_page',
@@ -178,12 +180,12 @@ class Protocol:
                    interrupt_mode=intr)
 
     @staticmethod
-    def mk_page(msg, effect = 'APPEAR', num = '001', persist_time='S60', last = True, center=True):
+    def mk_page(msg = '', effect = 'APPEAR', num = '001', persist_time='S60', cmd='DEFAULT', last = True, center=True, time = False):
         return con(page_num=num,
                    display_ctrl='TIMED',
                    persist_time=persist_time,
                    show_temp=False,
-                   show_time=False,
+                   show_time=time,
                    page_effect=effect,
                    background_on=False,
                    non_english=False,
@@ -192,6 +194,7 @@ class Protocol:
                    bold_joins_56=False,
                    bold_joins_34=False,
                    bold_joins_12=False,
+                   cmd=cmd,
                    body=msg)
 
     @staticmethod
