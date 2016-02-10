@@ -6,7 +6,7 @@ class Display():
 
     def open(self):
         self.addr = 1
-        self.port = 'COM13'
+        self.port = '/dev/tty.usbserial-FT8WJS9S'
         self.ser = serial.Serial(self.port,
                                  baudrate=9600,
                                  parity=serial.PARITY_NONE,
