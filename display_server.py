@@ -4,8 +4,19 @@ import cgi
 import re
 import os.path
 import json
+from display import Display
 
-sentence_list = [{"sentence" : "I love chocolat", "person" : "Arnaud", "date":"22/02/2017"}]
+display = Display()
+sentence_list = []
+
+def sentence_serialize():
+    serialize = []
+    for sentence in sentence_list:
+        serialize.append(sentence['person'] + " a dit  : \"" + sentence['sentence'] + "\" le " + sentence['date'])
+    return serialize
+
+def refresh_display():
+    display.multiple_sliding_message(sentence_serialize(), 'S10')
 
 def controller_ressource(path, args):
     fname = '.' + path
@@ -23,13 +34,17 @@ def controller_list(path, args):
 
 def controller_add(path, args):
     if ((len(args['sentence']) > 0) and (len(args['person']) > 0) and (len(args['sentence']) > 0)):
-        sentence_list.append({"sentence" : args['sentence'], "person" : args['person'], "date":args['sentence']})
+        sentence_list.append({"sentence" : args['sentence'], "person" : args['person'], "date":args['date']})
+        refresh_display()
         return json.dumps({'status':'ok', 'list':sentence_list})
     else:
         return json.dumps({'status':'ko', 'message':'Bad value'})
 
 def controller_delete(path, args):
-    return "delete"
+    index = int(args['sentence_id']);
+    sentence_list.pop(index)
+    refresh_display()
+    return json.dumps({'status':'ok', 'list':sentence_list})
 
 class MyHTTPHandler(BaseHTTPRequestHandler):
 
