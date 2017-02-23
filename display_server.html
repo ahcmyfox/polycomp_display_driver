@@ -46,7 +46,7 @@ $(document).ready(function() {
               person   : $("#person").val(), 
               date     : $("#date").val()
             },
-            function(response, status)
+            function(data, status)
             {
               $("#sentence").val("");
               $("#person").val("");
@@ -55,6 +55,7 @@ $(document).ready(function() {
               if (status == "success")
               {
                 var response = jQuery.parseJSON(data);
+                console.log(response);
                 if (response['status'] == 'ok')
                 {
                   $("#popup").html('<div class="alert alert-success"><strong>Succes</strong> Citation envoyee avec succes </div>');

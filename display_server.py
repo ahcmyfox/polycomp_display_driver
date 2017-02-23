@@ -86,10 +86,12 @@ class MyHTTPHandler(BaseHTTPRequestHandler):
                                 environ = {'REQUEST_METHOD' : 'POST',
                                            'CONTENT_TYPE' : self.headers['Content-Type'],
                                            })
-        for i in form:
-            print i + ' ' + form[i]
+        args = {}
 
-        self.route('post', self.path, form)
+        for i in form:
+            args[i] = form.getvalue(i)
+
+        self.route('post', self.path, args)
 
 
 if __name__ == "__main__":
