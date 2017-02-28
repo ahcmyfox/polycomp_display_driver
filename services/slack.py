@@ -1,10 +1,13 @@
+import sys
+sys.path.insert(0, '../driver')
+
 import urllib2
-from time import sleep
-from display import Display
+from   time import sleep
+from   display import Display
 import json
 
 if __name__ == "__main__":
-	dis = Display()
+	dis = Display('COM7')
 	while True:
 		jsonstr = urllib2.urlopen("http://api-dev.myfox.io:7777/read").read()
 		print jsonstr
