@@ -4,16 +4,18 @@ import json
 
 class SentencesList():
 
+    JSON_PATH = os.path.join(os.path.dirname(__file__), 'sentences_save.json')
+
     def __init__(self, services):
         self.services = services
-        if (os.path.isfile('sentences_save.json')):
-            with open('sentences_save.json', 'r') as sentences_file:
+        if (os.path.isfile(self.JSON_PATH)):
+            with open(self.JSON_PATH, 'r') as sentences_file:
                 self.sentences = json.loads(sentences_file.read())
         else:
             self.sentences = []
 
     def on_update(self):
-        with open('sentences_save.json', 'w') as sentences_file:
+        with open(self.JSON_PATH, 'w') as sentences_file:
             sentences_file.write(json.dumps(self.sentences))
         self.services.get('server').on_update()
 
@@ -50,6 +52,7 @@ class SentencesList():
     def serialize(self):
         serialize = []
         for sentence in self.sentences:
-            serialize.append(sentence['person'] + " a dit  : \"" + sentence['sentence'] + "\" le " + sentence['date'])
+            serialized = '\"{}\", {}, {}'.format(sentence['sentence'], sentence['person'], sentence['date']);
+            serialize.append(serialized)
         return serialize
 

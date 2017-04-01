@@ -86,7 +86,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
 class SentencesServer(HTTPServer, object):
 
-    def __init__(self, port, update_callback):
+    def __init__(self, port, update_callback = None):
         super(SentencesServer, self).__init__(('0.0.0.0', port), SentencesHTTPHandler)
         self.sp = ServicesProvider(self)
         self.update_callback = update_callback
@@ -100,7 +100,11 @@ class SentencesServer(HTTPServer, object):
         self.shutdown()
 
     def on_update(self):
-        return self.update_callback(self.sp.get('sentences_list').serialize())
+        if callable(self.update_callback):
+            self.update_callback(self.sp.get('sentences_list').serialize())
+
+    def get_sentences(self):
+        return self.sp.get('sentences_list').serialize()
 
 def on_update(content):
     print "SENTENCES UPDATE"

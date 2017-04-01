@@ -9,8 +9,8 @@ class Slack():
     	self.url = "http://stackoverflow.com/questions/28364083/simplehttpserver-launched-as-a-thread-does-not-daemonize"
 
     def serialize(self, content):
-        if(len(decoded['messages']) > 0):
-            return decoded['messages'][0]['user'] + " : " + decoded['messages'][0]['message']
+        if(len(content['messages']) > 0):
+            return content['messages'][0]['user'] + " : " + content['messages'][0]['message']
         else:
             return False
 

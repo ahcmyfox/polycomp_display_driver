@@ -1,4 +1,5 @@
 import sys
+import os.path
 
 class SentencesRessource():
 
@@ -15,6 +16,6 @@ class SentencesRessource():
         return False
 
     def get(self, path, args):
-        with open('.' + path, 'r') as content_file:
+        with open(os.path.dirname(__file__) + path, 'r') as content_file:
             return content_file.read()
 
