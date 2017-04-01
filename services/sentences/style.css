@@ -1,0 +1,30 @@
+.bg-1 {
+    background-color: #1abc9c; 
+    color: #ffffff;
+    padding: 50px 60px;
+}
+
+.bg-grey {
+    background-color: #f6f6f6;
+}
+
+.bg-dark {
+    background-color: #797979;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.container-fluid {
+    padding: 50px 50px;
+}
+
+h1 {
+    font-family: 'Caveat Brush', cursive;
+    font-size:100px;
+}
+
+h2 {
+    font-family: 'Roboto', sans-serif;
+}

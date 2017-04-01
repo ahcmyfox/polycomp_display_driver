@@ -1,1 +1,3 @@
 *.pyc
+services/sentences/sentences_save.json
+sentences_save.json

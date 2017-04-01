@@ -1,13 +1,15 @@
 import serial
-from protocol import Protocol
-from time import sleep
+from   protocol import Protocol
+from   time import sleep
 
 class Display():
 
     addr = 1;
 
+    def __init__(self, port):
+        self.port = port
+
     def open(self):
-        self.port = '/dev/tty.usbserial-FT8WJS9S'
         self.ser = serial.Serial(self.port,
                                  baudrate=9600,
                                  parity=serial.PARITY_NONE,
@@ -47,7 +49,6 @@ class Display():
                                                  Protocol.mk_serst(more=True),  
                                                  Protocol.mk_page(msg=message, num = '00' + str(i), persist_time = delay, last = False, effect = effect))
             else:
-                print 'last'
                 trame = Protocol.build_frame(Protocol.mk_header(addr=self.addr), 
                                                  Protocol.mk_serst(more=False), 
                                                  Protocol.mk_page(msg=message, num = '00' + str(i), persist_time= delay, last = True, effect = effect))
@@ -73,7 +74,7 @@ class Display():
         self.close()
 
 def display_test():
-    dis = Display()
+    dis = Display('COM7')
     #dis.simple_static_message("Simple static")
     #dis.time_message()
     dis.alert_message("Alert")
