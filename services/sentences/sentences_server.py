@@ -4,6 +4,7 @@ from    urlparse import urlparse, parse_qs
 import  cgi
 from    service_provider import ServicesProvider
 import  time
+import  threading
 
 class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
@@ -24,12 +25,10 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
         if (contents != False):
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(contents)
         else:
             self.send_response(404)
-            self.send_header("Content-type", "plain")
             self.end_headers()
 
 
@@ -52,12 +51,10 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
         if (contents != False):
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(contents)
         else:
             self.send_response(404)
-            self.send_header("Content-type", "plain")
             self.end_headers()
 
 
@@ -80,36 +77,41 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
         if (contents != False):
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(contents)
         else:
             self.send_response(404)
-            self.send_header("Content-type", "plain")
             self.end_headers()
 
 
 class SentencesServer(HTTPServer, object):
 
-    def __init__(self, port):
+    def __init__(self, port, update_callback):
         super(SentencesServer, self).__init__(('0.0.0.0', port), SentencesHTTPHandler)
-        self.sp = ServicesProvider()
+        self.sp = ServicesProvider(self)
+        self.update_callback = update_callback
 
-    def get_list(self):
-        return self.sp.get('sentences_list').serialize()
+    def start(self):
+        thread = threading.Thread(target = self.serve_forever)
+        thread.daemon = True
+        thread.start()
+
+    def stop(self):
+        self.shutdown()
+
+    def on_update(self):
+        return self.update_callback(self.sp.get('sentences_list').serialize())
+
+def on_update(content):
+    print "SENTENCES UPDATE"
+    print content
 
 if __name__ == "__main__":
+    server = SentencesServer(8000, on_update)
     try:
-        server = SentencesServer(8000)
-        t = 0
+        server.start()
         while True:
-            t = t + 1
-            server.handle_request()
-            if (t == 100):
-                t = 0
-                print server.get_list()
-            time.sleep(0.01)
+            time.sleep(1)
     except KeyboardInterrupt:
         print('SigTerm received, shutting down server')
-        server.shutdown()
-        server.socket.close()
+        sys.exit(0)

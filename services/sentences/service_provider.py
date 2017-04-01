@@ -18,7 +18,8 @@ class ServicesProvider(object):
 
     services      = {}
 
-    def __init__(self):
+    def __init__(self, server):
+        self.services['server']              = server
         self.services['sentences_list']      = SentencesList(self)
         self.services['sentences_view']      = SentencesView(self)
         self.services['sentences_ressource'] = SentencesRessource(self)
