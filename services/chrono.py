@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 import sys
-sys.path.insert(0, '../driver')
-
 from   time import sleep
 import arrow
-from   display import Display
 
 class Chrono():
 
@@ -22,10 +19,8 @@ class Chrono():
         return '{:02d}:{:02d}:{:02d}'.format(int(dhrs), int(dmins), int(dsecs))
 
 if __name__ == '__main__':
-    dis = Display('/dev/tty.SLAB_USBtoUART')
     chrono = Chrono()
     while True:
         td = chrono.get_elapsed()
         print (td)
-        dis.simple_static_message(td)
         sleep(1)
