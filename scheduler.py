@@ -13,6 +13,7 @@ from chrono           import Chrono
 from countdown        import Countdown
 from weather          import Weather
 from sentences_server import SentencesServer
+from saints           import Saints
 
 def display_clock(display, clock, duration):
     previous = ""
@@ -32,6 +33,12 @@ def display_weather(display, weather, duration):
     display.simple_static_message(message)
     time.sleep(duration)
 
+def display_saint(display, saints, duration):
+    message = saints.get_current()
+    print message
+    display.simple_sliding_message(message)
+    time.sleep(duration)
+
 def on_sentences_update(sentences):
     print('sentences updated')
     print(sentences)
@@ -48,6 +55,7 @@ if __name__ == '__main__':
     display   = Display('/dev/tty.Bluetooth-Incoming-Port')
     clock     = Clock()
     weather   = Weather()
+    saints    = Saints()
     sentences = SentencesServer(8000, on_sentences_update)
 
     display.open()
@@ -57,6 +65,7 @@ if __name__ == '__main__':
         while (True):
             display_clock(display, clock, 3)
             display_weather(display, weather, 6)
+            display_saint(display, saints, 5)
             display_sentences(display, sentences, 30)
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
