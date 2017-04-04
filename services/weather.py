@@ -20,7 +20,7 @@ class Weather():
             jsonstr      = urllib2.urlopen(self.url).read()
             content      = json.loads(jsonstr)
             curr         = content['current_condition']
-            self.current = '{}  - {}\'C - {}km/h {} (raf {}km/h)'.format(curr['condition'], \
+            self.current = '{}  - {}\'C - {}km/h {} (raf {}km/h)'.format(curr['condition_key'], \
                                                                          curr['tmp'],       \
                                                                          curr['wnd_spd'],   \
                                                                          curr['wnd_dir'],   \

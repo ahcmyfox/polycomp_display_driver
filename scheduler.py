@@ -15,11 +15,14 @@ from weather          import Weather
 from sentences_server import SentencesServer
 from saints           import Saints
 
+def display_sliding_and_delay(display, message):
+    display.simple_sliding_message(message)
+    time.sleep(0.13 * len(message) + 2.3)
+
 def display_clock(display, clock, duration):
     previous = ""
     count    = 0
     while (count < duration):
-        time.sleep(0.1)
         message = 'Il est {}'.format(clock.get_now())
         if (message != previous):
             count = count + 1
@@ -27,32 +30,29 @@ def display_clock(display, clock, duration):
             print message
             display.simple_static_message(message)
 
-def display_weather(display, weather, duration):
+def display_weather(display, weather):
     message = weather.get_current()
     print message
-    display.simple_static_message(message)
-    time.sleep(duration)
+    display_sliding_and_delay(display, message)
 
-def display_saint(display, saints, duration):
+def display_saint(display, saints):
     message = saints.get_current()
     print message
-    display.simple_sliding_message(message)
-    time.sleep(duration)
+    display_sliding_and_delay(display, message)
 
 def on_sentences_update(sentences):
     print('sentences updated')
     print(sentences)
 
-def display_sentences(display, server, duration):
+def display_sentences(display, server):
     sentences = server.get_sentences()
     print sentences
-    if (len(sentences) > 0):
-        display.multiple_sliding_message(sentences)
-        time.sleep(duration)
+    for i in range(len(sentences)):
+        display_sliding_and_delay(display, sentences[i])
 
 if __name__ == '__main__':
 	
-    display   = Display('/dev/tty.Bluetooth-Incoming-Port')
+    display   = Display('/dev/ttyUSB0')
     clock     = Clock()
     weather   = Weather()
     saints    = Saints()
@@ -63,10 +63,10 @@ if __name__ == '__main__':
 
     try:
         while (True):
-            display_clock(display, clock, 3)
-            display_weather(display, weather, 6)
-            display_saint(display, saints, 5)
-            display_sentences(display, sentences, 30)
+            display_clock(display, clock, 6)
+            display_weather(display, weather)
+            display_saint(display, saints)
+            display_sentences(display, sentences)
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
         sys.exit(0)
