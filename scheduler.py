@@ -17,7 +17,7 @@ from saints           import Saints
 
 def display_sliding_and_delay(display, message):
     display.simple_sliding_message(message)
-    time.sleep(0.13 * len(message) + 2.3)
+    time.sleep(0.121 * len(message) + 2.3)
 
 def display_clock(display, clock, duration):
     previous = ""
@@ -49,6 +49,7 @@ def display_sentences(display, server):
     print sentences
     for i in range(len(sentences)):
         display_sliding_and_delay(display, sentences[i])
+        display_clock(display, clock, 6)
 
 if __name__ == '__main__':
 	
@@ -65,7 +66,9 @@ if __name__ == '__main__':
         while (True):
             display_clock(display, clock, 6)
             display_weather(display, weather)
+            display_clock(display, clock, 6)
             display_saint(display, saints)
+            display_clock(display, clock, 6)
             display_sentences(display, sentences)
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
