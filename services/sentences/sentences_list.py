@@ -22,7 +22,7 @@ class SentencesList():
     def add(self, path, args):
         print args
         if ('sentence' in args) and ('person' in args) and ('date' in args):
-            self.sentences.append({'sentence' : args['sentence'], 'person' : args['person'], 'date' : args['date']})
+            self.sentences.append({'sentence' : args['sentence'], 'person' : args['person'], 'date' : args['date'], 'vote' : 0})
             self.on_update()
         return json.dumps(self.sentences)
 
@@ -43,6 +43,12 @@ class SentencesList():
             self.on_update()
         return json.dumps(self.sentences)
 
+    def vote(self, path, args):
+        if ('id' in args):
+            self.sentences[int(args['id'])]['vote'] += 1 ;
+            self.on_update()
+        return json.dumps(self.sentences)
+
     def get(self, path, args):
         if ('id' in args):
             return json.dumps(self.sentences[args['id']])
@@ -52,7 +58,7 @@ class SentencesList():
     def serialize(self):
         serialize = []
         for sentence in self.sentences:
-            serialized = '\"{}\", {}, {}'.format(sentence['sentence'], sentence['person'], sentence['date']);
+            serialized = '\"{}\", {}, {}, {}'.format(sentence['sentence'], sentence['person'], sentence['date'], sentence['vote']);
             serialize.append(serialized)
         return serialize
 

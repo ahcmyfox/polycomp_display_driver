@@ -17,6 +17,9 @@ class SentencesView():
     def delete(self, path, args):
         return False
 
+    def vote(self, path, args):
+        return False
+
     def get(self, path, args):
         with open(self.VIEW_PATH, 'r') as content_file:
             return content_file.read()

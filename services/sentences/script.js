@@ -20,6 +20,9 @@ $(document).ready(function()
             html +=     '<td>';
             html +=          '<span class="glyphicon glyphicon-remove" style="cursor: pointer; cursor: hand;" id="delete_' + index + '"></span>';
             html +=     '</td>';
+            html +=     '<td>';
+            html +=          '<span class="glyphicon glyphicon-thumbs-up" style="cursor: pointer; cursor: hand;" id="vote_' + index + '"></span>';
+            html +=     '</td>';
             html += '</tr>';
         }
         $("#list").html(html);
@@ -65,6 +68,32 @@ $(document).ready(function()
 
         return false;
     });
+
+    /** UPVOTE **/
+
+    $(document).on('click','.glyphicon-thumbs-up', function()
+    {
+        var sentence_id = $(this).attr('id').replace('vote_', '');
+
+        $.ajax({
+            url: '/sentences',
+            type: 'VOTE',
+            data: {"id": sentence_id},
+            success: function(result) 
+            {
+                update_list(jQuery.parseJSON(result));
+                display_popup('success', 'Votre vote a bien été pris en compte');
+            },
+            error : function(result) 
+            {
+                display_popup('danger', 'Erreur sur upvote');
+            }
+        });
+
+        return false;
+    });
+
+
 
     /** POST **/
 
