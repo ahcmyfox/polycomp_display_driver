@@ -21,7 +21,7 @@ $(document).ready(function()
             html +=          '<span class="glyphicon glyphicon-remove" style="cursor: pointer; cursor: hand;" id="delete_' + index + '"></span>';
             html +=     '</td>';
             html +=     '<td>';
-            html +=          '<span class="glyphicon glyphicon-thumbs-up" style="cursor: pointer; cursor: hand;" id="vote_' + index + '"></span>';
+            html +=          element['vote'] + '&nbsp;&nbsp;<span class="glyphicon glyphicon-thumbs-up" style="cursor: pointer; cursor: hand;" id="vote_' + index + '"></span>';
             html +=     '</td>';
             html += '</tr>';
         }
