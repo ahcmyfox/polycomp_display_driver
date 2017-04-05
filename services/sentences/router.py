@@ -29,4 +29,10 @@ class Router():
                 return self.services.get(route['service']).delete(path, args)
         return False
 
+    def do_VOTE(self, path, args):
+        for route in self.routes:
+            if (re.match(route['path'], path)):
+                return self.services.get(route['service']).vote(path, args)
+        return False
+
 

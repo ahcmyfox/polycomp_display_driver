@@ -15,6 +15,9 @@ class SentencesRessource():
     def delete(self, path, args):
         return False
 
+    def vote(self, path, args):
+        return False
+
     def get(self, path, args):
         with open(os.path.dirname(__file__) + path, 'r') as content_file:
             return content_file.read()
