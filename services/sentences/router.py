@@ -29,10 +29,16 @@ class Router():
                 return self.services.get(route['service']).delete(path, args)
         return False
 
-    def do_VOTE(self, path, args):
+    def do_PATCH(self, path, args):
         for route in self.routes:
             if (re.match(route['path'], path)):
-                return self.services.get(route['service']).vote(path, args)
+                return self.services.get(route['service']).update(path, args)
+        return False
+
+    def do_PUT(self, path, args):
+        for route in self.routes:
+            if (re.match(route['path'], path)):
+                return self.services.get(route['service']).update(path, args)
         return False
 
 

@@ -83,13 +83,13 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-    def do_VOTE(self):
+    def do_PATCH(self):
 
-        print("Just received a VOTE request")
+        print("Just received a PATCH request")
 
         form = cgi.FieldStorage(fp      = self.rfile,
                                 headers = self.headers,
-                                environ = {'REQUEST_METHOD' : 'POST',
+                                environ = {'REQUEST_METHOD' : 'PATCH',
                                            'CONTENT_TYPE' : self.headers['Content-Type'],
                                            })
         args = {}
@@ -98,7 +98,32 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             args[i] = form.getvalue(i)
 
         sp = ServicesProvider()
-        contents = sp.get('router').do_VOTE(self.path, args)
+        contents = sp.get('router').do_PATCH(self.path, args)
+
+        if (contents != False):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(contents)
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_PUT(self):
+
+        print("Just received a PUT request")
+
+        form = cgi.FieldStorage(fp      = self.rfile,
+                                headers = self.headers,
+                                environ = {'REQUEST_METHOD' : 'PUT',
+                                           'CONTENT_TYPE' : self.headers['Content-Type'],
+                                           })
+        args = {}
+
+        for i in form:
+            args[i] = form.getvalue(i)
+
+        sp = ServicesProvider()
+        contents = sp.get('router').do_PUT(self.path, args)
 
         if (contents != False):
             self.send_response(200)

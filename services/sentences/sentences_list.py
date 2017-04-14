@@ -41,12 +41,15 @@ class SentencesList():
 
     def update(self, path, args):
         if ('id' in args):
+            id = int(args['id'])
             if ('sentence' in args):
-                self.sentences['id']['sentence'] = args['sentence']
+                self.sentences[id]['sentence'] = args['sentence']
             if ('person' in args):
-                self.sentences['id']['person'] = args['person']
+                self.sentences[id]['person'] = args['person']
             if ('date' in args):
-                self.sentences['id']['date'] = args['date']
+                self.sentences[id]['date'] = args['date']
+            if ('vote' in args):
+                self.sentences[id]['vote'] = args['vote']
             self.on_update()
         return self.get_sorted_sentences()
 

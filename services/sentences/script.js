@@ -69,7 +69,7 @@ $(document).ready(function()
         return false;
     });
 
-    /** UPVOTE **/
+    /** PATCH **/
 
     $(document).on('click','.glyphicon-thumbs-up', function()
     {
@@ -77,23 +77,34 @@ $(document).ready(function()
 
         $.ajax({
             url: '/sentences',
-            type: 'VOTE',
-            data: {"id": sentence_id},
+            type: 'GET',
             success: function(result) 
             {
-                update_list(jQuery.parseJSON(result));
-                display_popup('success', 'Votre vote a bien été pris en compte');
+                current_vote = Number(jQuery.parseJSON(result)[sentence_id]['vote']);
+
+                $.ajax({
+                    url: '/sentences',
+                    type: 'PATCH',
+                    data: {"id": sentence_id, "vote" : current_vote + 1},
+                    success: function(result) 
+                    {
+                        update_list(jQuery.parseJSON(result));
+                        display_popup('success', 'Votre vote a bien été pris en compte');
+                    },
+                    error : function(result) 
+                    {
+                        display_popup('danger', 'Erreur sur vote');
+                    }
+                });
             },
             error : function(result) 
             {
-                display_popup('danger', 'Erreur sur upvote');
+                display_popup('danger', 'Erreur sur vote');
             }
         });
 
         return false;
     });
-
-
 
     /** POST **/
 
