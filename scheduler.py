@@ -40,6 +40,11 @@ def display_saint(display, saints):
     print message
     display_sliding_and_delay(display, message)
 
+def display_alert(display, message):
+    print message
+    display.display_alert(message)
+    time.sleep(30.0)
+
 def on_sentences_update(sentences):
     print('sentences updated')
     print(sentences)
@@ -52,7 +57,6 @@ def display_sentences(display, server):
         display_clock(display, clock, 6)
 
 if __name__ == '__main__':
-	
     display   = Display('/dev/ttyUSB0')
     clock     = Clock()
     weather   = Weather()
@@ -64,16 +68,16 @@ if __name__ == '__main__':
 
     try:
         while (True):
-            display_clock(display, clock, 6)
-            display_weather(display, weather)
-            display_clock(display, clock, 6)
-            display_saint(display, saints)
-            display_clock(display, clock, 6)
-            display_sentences(display, sentences)
+           alert = sentences.get_ci_alert()
+           if (len(alert) > 0):
+               display_alert(alert)
+           display_clock(display, clock, 6)
+           display_weather(display, weather)
+           display_clock(display, clock, 6)
+           display_saint(display, saints)
+           display_clock(display, clock, 6)
+           display_sentences(display, sentences)
+
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
         sys.exit(0)
-
-
-
-    	

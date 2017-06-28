@@ -155,6 +155,9 @@ class SentencesServer(HTTPServer, object):
     def get_sentences(self):
         return self.sp.get('sentences_list').serialize()
 
+    def get_ci_alert(self):
+        return self.sp.get('ci_alert').get_message()
+
 def on_update(content):
     print "SENTENCES UPDATE"
     print content
