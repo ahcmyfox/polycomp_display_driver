@@ -26,3 +26,6 @@ class CIAlert():
     def serialize(self, args):
         return '{} {} {}'.format(args['person'], args['date'], args['sentence'])
 
+    def get_message(self):
+        return self.message
+
