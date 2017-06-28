@@ -74,10 +74,10 @@ class Display():
         self.close()
 
 def display_test():
-    dis = Display('COM7')
+    dis = Display('/dev/ttyUSB0')
     #dis.simple_static_message("Simple static")
     #dis.time_message()
-    dis.alert_message("Alert")
+    dis.alert_message("SE-RE-NI-TE")
     #dis.simple_sliding_message("Simple sliding")
     #dis.multiple_static_message(["aaa", "bbb", "ccc", "ddd", "eee", "fff"], 'S2')
     #dis.multiple_sliding_message(["Multiple", "sliding", "messages"], 'S10')

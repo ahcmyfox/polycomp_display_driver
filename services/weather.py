@@ -26,7 +26,7 @@ class Weather():
                                                                          curr['wnd_dir'],   \
                                                                          curr['wnd_gust'])
         except:
-            print("Update error")
+            self.current = 'WEATHER UPDATE ERROR'
 
     def get_current(self):
         delta = arrow.now() - self.last_update
