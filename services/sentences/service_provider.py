@@ -6,7 +6,7 @@ from router              import Router
 class Singleton(type):
 
     _instances = {}
-    
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -24,6 +24,7 @@ class ServicesProvider(object):
         self.services['sentences_view']      = SentencesView(self)
         self.services['sentences_ressource'] = SentencesRessource(self)
         self.services['router']              = Router(self)
+        self.services['ci_alert']            = CIAlert(self)
 
     def has(self, service):
         if (service in self.services):

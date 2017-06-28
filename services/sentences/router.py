@@ -6,6 +6,7 @@ class Router():
 
     routes = [{'path' : '^\/.+\.[png|jpg|css|js]' , 'service' : 'sentences_ressource'},
               {'path' : '^\/sentences$'           , 'service' : 'sentences_list'},
+              {'path' : '^\/ci_alert$'            , 'service' : 'ci_alert'},
               {'path' : '^\/$'                    , 'service' : 'sentences_view'}]
 
     def __init__(self, services):
