@@ -75,6 +75,7 @@ class SentencesList():
         serialize = []
         for sentence in self.sentences:
             serialized = '\"{}\", {}, {}'.format(sentence['sentence'], sentence['person'], sentence['date']);
-            serialize.append(serialized)
+            for i in range(sentence['vote']):
+                serialize.append(serialized)
         return serialize
 

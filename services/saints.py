@@ -917,6 +917,7 @@ saints_list =                                                           \
           {'name' : 'Pierrette',           'day' : 29, 'month' : 6},    \
           {'name' : 'Pierrick',            'day' : 29, 'month' : 6},    \
           {'name' : 'Pietro',              'day' : 29, 'month' : 6},    \
+          {'name' : 'Piotr',               'day' : 29, 'month' : 6},    \
           {'name' : 'Placie',              'day' : 5 , 'month' : 10},   \
           {'name' : 'Pol',                 'day' : 12, 'month' : 3},    \
           {'name' : 'Polycarpe',           'day' : 23, 'month' : 2},    \

@@ -7,6 +7,8 @@ sys.path.insert(0, 'services')
 sys.path.insert(0, 'services/sentences')
 sys.path.insert(0, 'driver')
 
+from random import randint
+
 from display          import Display
 from clock            import Clock
 from chrono           import Chrono
@@ -42,7 +44,7 @@ def display_saint(display, saints):
 
 def display_alert(display, message):
     print message
-    display.display_alert(message)
+    display.alert_message(message)
     time.sleep(30.0)
 
 def on_sentences_update(sentences):
@@ -56,27 +58,36 @@ def display_sentences(display, server):
         display_sliding_and_delay(display, sentences[i])
         display_clock(display, clock, 6)
 
+def schedule_messages(display, server):
+    alert = server.get_ci_alert()
+    m = randint(0, 3)
+    if (len(alert) > 0):
+        display_alert(display, alert)
+    elif (m == 0):
+        display_clock(display, clock, 6)
+    elif (m == 1):
+        display_weather(display, weather)
+    elif (m == 2):
+           display_saint(display, saints)
+    elif (m == 3):
+        sentences = server.get_sentences()
+        print sentences
+        s = randint(0, len(sentences))
+        display_sliding_and_delay(display, sentences[s])
+
 if __name__ == '__main__':
     display   = Display('/dev/ttyUSB0')
     clock     = Clock()
     weather   = Weather()
     saints    = Saints()
-    sentences = SentencesServer(8000, on_sentences_update)
+    server = SentencesServer(8000, on_sentences_update)
 
     display.open()
-    sentences.start()
+    server.start()
 
     try:
         while (True):
-           alert = sentences.get_ci_alert()
-           if (len(alert) > 0):
-               display_alert(alert)
-           display_clock(display, clock, 6)
-           display_weather(display, weather)
-           display_clock(display, clock, 6)
-           display_saint(display, saints)
-           display_clock(display, clock, 6)
-           display_sentences(display, sentences)
+            schedule_messages(display, server)
 
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
