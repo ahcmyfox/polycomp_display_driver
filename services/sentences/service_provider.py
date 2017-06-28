@@ -2,6 +2,7 @@ from sentences_list      import SentencesList
 from sentences_view      import SentencesView
 from sentences_ressource import SentencesRessource
 from router              import Router
+from ci_alert            import CIAlert
 
 class Singleton(type):
 
