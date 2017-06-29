@@ -72,7 +72,7 @@ def schedule_messages(display, server):
     elif (m == 3):
         sentences = server.get_sentences()
         print sentences
-        s = randint(0, len(sentences))
+        s = randint(0, len(sentences) - 1)
         display_sliding_and_delay(display, sentences[s])
 
 if __name__ == '__main__':
