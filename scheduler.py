@@ -16,6 +16,7 @@ from countdown        import Countdown
 from weather          import Weather
 from sentences_server import SentencesServer
 from saints           import Saints
+from map              import Map
 
 def display_sliding_and_delay(display, message):
     display.simple_sliding_message(message)
@@ -57,10 +58,15 @@ def display_sentences(display, server):
     for i in range(len(sentences)):
         display_sliding_and_delay(display, sentences[i])
         display_clock(display, clock, 6)
+		
+def display_map(display, map):
+    message = map.get_current()
+    print message
+    display_sliding_and_delay(display, message)
 
 def schedule_messages(display, server):
     alert = server.get_ci_alert()
-    m = randint(0, 3)
+    m = randint(0, 4)
     if (len(alert) > 0):
         display_alert(display, alert)
     elif (m == 0):
@@ -74,11 +80,14 @@ def schedule_messages(display, server):
         print sentences
         s = randint(0, len(sentences) - 1)
         display_sliding_and_delay(display, sentences[s])
+    elif (m == 4):
+        display_map(display, map)
 
 if __name__ == '__main__':
     display   = Display('/dev/ttyUSB0')
     clock     = Clock()
     weather   = Weather()
+    map   	  = Map()
     saints    = Saints()
     server = SentencesServer(8000, on_sentences_update)
 
