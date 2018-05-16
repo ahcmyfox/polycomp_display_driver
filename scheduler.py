@@ -17,6 +17,8 @@ from map import Map
 from temperature import Temperature
 
 
+last_message = -1
+
 def display_sliding_and_delay(display, message):
     display.simple_sliding_message(message)
     time.sleep(0.121 * len(message) + 2.3)
@@ -76,10 +78,15 @@ def display_map(display, map):
     print message
     display_sliding_and_delay(display, message)
 
+def schedule_messages(display, server, last_message):
 
-def schedule_messages(display, server):
     alert = server.get_ci_alert()
-    m = randint(0, 5)
+
+    m = last_message
+    while m == last_message:
+        m = randint(0, 100 * 7 - 1) % 7
+	print m
+
     if len(alert) > 0:
         display_alert(display, alert)
     elif m == 0:
@@ -92,12 +99,13 @@ def schedule_messages(display, server):
         display_temperature(display, temperature)
     elif m == 4:
         display_map(display, map)
-    elif m == 5:
+    elif m >= 5:
         sentences = server.get_sentences()
         if len(sentences) > 0:
             s = randint(0, len(sentences) - 1)
             display_sliding_and_delay(display, sentences[s])
 
+    return m
 
 if __name__ == '__main__':
     display = Display('/dev/ttyUSB0')
@@ -112,8 +120,8 @@ if __name__ == '__main__':
     server.start()
 
     try:
-        while True:
-            schedule_messages(display, server)
+        while (True):
+            last_message = schedule_messages(display, server, last_message)
 
     except KeyboardInterrupt:
         print('SigTerm received, shutting down')
