@@ -17,6 +17,7 @@ from weather          import Weather
 from sentences_server import SentencesServer
 from saints           import Saints
 from map              import Map
+from temperature      import Temperature
 
 def display_sliding_and_delay(display, message):
     display.simple_sliding_message(message)
@@ -48,6 +49,11 @@ def display_alert(display, message):
     display.alert_message(message)
     time.sleep(30.0)
 
+def display_temperature(display, temp):
+    message = temp.get_current()
+    print message
+    display_sliding_and_delay(display, message)
+
 def on_sentences_update(sentences):
     print('sentences updated')
     print(sentences)
@@ -58,7 +64,7 @@ def display_sentences(display, server):
     for i in range(len(sentences)):
         display_sliding_and_delay(display, sentences[i])
         display_clock(display, clock, 6)
-		
+
 def display_map(display, map):
     message = map.get_current()
     print message
@@ -66,7 +72,7 @@ def display_map(display, map):
 
 def schedule_messages(display, server):
     alert = server.get_ci_alert()
-    m = randint(0, 4)
+    m = randint(0, 5)
     if (len(alert) > 0):
         display_alert(display, alert)
     elif (m == 0):
@@ -74,14 +80,16 @@ def schedule_messages(display, server):
     elif (m == 1):
         display_weather(display, weather)
     elif (m == 2):
-           display_saint(display, saints)
+        display_saint(display, saints)
     elif (m == 3):
-        sentences = server.get_sentences()
-        print sentences
-        s = randint(0, len(sentences) - 1)
-        display_sliding_and_delay(display, sentences[s])
+        display_temperature(display, temperature)
     elif (m == 4):
-        display_map(display, map)
+	display_map(display, map)
+    elif (m == 5):
+        sentences = server.get_sentences()
+        if len(sentences) > 0:
+       	    s = randint(0, len(sentences) - 1)
+            display_sliding_and_delay(display, sentences[s])
 
 if __name__ == '__main__':
     display   = Display('/dev/ttyUSB0')
@@ -89,6 +97,7 @@ if __name__ == '__main__':
     weather   = Weather()
     map   	  = Map()
     saints    = Saints()
+    temperature  = Temperature()
     server = SentencesServer(8000, on_sentences_update)
 
     display.open()
