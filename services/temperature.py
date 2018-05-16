@@ -10,13 +10,13 @@ class Temperature():
     def __init__(self):
         self.ds = DS18B20('28-000004b422a2')
         self.update()
-    
+
     def update(self):
         print ('Updating temperature...')
         self.last_update = arrow.now()
         try:
             t  = self.ds.temperature()  # read temperature
-            self.current = "Temperature BE : {} degC".format(t.C)
+            self.current = "Temperature : {} 'C".format(t.C)
         except:
             self.current = 'TEMPERATURE UPDATE ERROR'
 
