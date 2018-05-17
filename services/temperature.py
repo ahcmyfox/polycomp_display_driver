@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-import sys
-from   time import sleep
+# coding: utf-8
+
 import arrow
 from sensor.DS18B20 import DS18B20
-class Temperature():
 
+
+class Temperature():
     UPDATE_INTERVAL_min = 1
 
     def __init__(self):
@@ -15,16 +16,17 @@ class Temperature():
         print ('Updating temperature...')
         self.last_update = arrow.now()
         try:
-            t  = self.ds.temperature()  # read temperature
-            self.current = "Temperature : {} 'C".format(t.C)
+            t = self.ds.temperature()  # read temperature
+            self.current = "Temperature : {} °C".format(t.C)
         except:
             self.current = 'TEMPERATURE UPDATE ERROR'
 
     def get_current(self):
         delta = arrow.now() - self.last_update
-        if (delta.total_seconds() > (self.UPDATE_INTERVAL_min * 60)):
+        if delta.total_seconds() > (self.UPDATE_INTERVAL_min * 60):
             self.update()
         return self.current
+
 
 if __name__ == '__main__':
     temperature = Temperature()

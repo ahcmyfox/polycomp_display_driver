@@ -1,34 +1,35 @@
-import sys
-import urllib2
-from   time import sleep
 import json
+import urllib2
+from time import sleep
 
-class Slack():
+
+class Slack:
 
     def __init__(self):
-    	self.url = "http://stackoverflow.com/questions/28364083/simplehttpserver-launched-as-a-thread-does-not-daemonize"
+        self.url = "http://stackoverflow.com/questions/28364083/simplehttpserver-launched-as-a-thread-does-not-daemonize"
 
-    def serialize(self, content):
-        if(len(content['messages']) > 0):
+    @staticmethod
+    def serialize(content):
+        if len(content['messages']) > 0:
             return content['messages'][0]['user'] + " : " + content['messages'][0]['message']
         else:
             return False
 
     def get(self):
-    	try:
+        try:
             jsonstr = urllib2.urlopen(self.url).read()
             decoded = json.loads(jsonstr)
             return self.serialize(decoded)
         except:
-        	return False
+            return False
+
 
 if __name__ == "__main__":
     slack = Slack()
     while True:
         ret = slack.get()
-        if (ret != False):
+        if not ret:
             print ret
         else:
             print "(error)"
         sleep(1)
-		

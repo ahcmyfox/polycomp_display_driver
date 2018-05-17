@@ -1,7 +1,7 @@
-import sys
 import os.path
 
-class SentencesRessource():
+
+class SentencesRessource:
 
     def __init__(self, services):
         self.services = services
@@ -21,4 +21,3 @@ class SentencesRessource():
     def get(self, path, args):
         with open(os.path.dirname(__file__) + path, 'r') as content_file:
             return content_file.read()
-

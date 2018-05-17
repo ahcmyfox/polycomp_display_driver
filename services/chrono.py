@@ -1,22 +1,24 @@
 #!/usr/bin/env python
-import sys
-from   time import sleep
+from time import sleep
+
 import arrow
 
-class Chrono():
+
+class Chrono:
 
     def __init__(self):
-        self.start()
+        self.start = None
 
     def start(self):
         self.start = arrow.now()
 
     def get_elapsed(self):
-        end   = arrow.now()
+        end = arrow.now()
         delta = end - self.start
         dmins, dsecs = divmod(delta.total_seconds(), 60)
-        dhrs, dmins  = divmod(dmins, 60)
+        dhrs, dmins = divmod(dmins, 60)
         return '{:02d}:{:02d}:{:02d}'.format(int(dhrs), int(dmins), int(dsecs))
+
 
 if __name__ == '__main__':
     chrono = Chrono()

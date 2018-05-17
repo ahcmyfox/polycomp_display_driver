@@ -139,12 +139,12 @@ PAGE_CFG = cst.BitStruct('page_cfg',
                          cst.Flag('bold_joins_12'),
                          )
 
-CMD_SEQ = cst.Struct('_cmd', 
-                      cst.Magic('\x1c'),
-                      cst.Enum(cst.Byte('cmd'),
-                                FLASH   = 70, 
-                                ENLARGE = 69, 
-                                DEFAULT = 68))
+CMD_SEQ = cst.Struct('_cmd',
+                     cst.Magic('\x1c'),
+                     cst.Enum(cst.Byte('cmd'),
+                              FLASH=70,
+                              ENLARGE=69,
+                              DEFAULT=68))
 
 PAGE = cst.Struct('page',
                   PAGE_IDX,
@@ -157,12 +157,15 @@ PAGE = cst.Struct('page',
 DATETIME_BODY = cst.Struct('datetime_page',
                            cst.Const(PAGE_IDX, '000'),
 
-)
+                           )
 # values as ascii numbers 0x30-0x39
 
 MESSAGE = cst.Struct('msg', HEADER, SER_STATUS, PAGE)
 
+
 class Protocol:
+    def __init__(self):
+        pass
 
     @staticmethod
     def datetime_page():
@@ -180,7 +183,8 @@ class Protocol:
                    interrupt_mode=intr)
 
     @staticmethod
-    def mk_page(msg = '', effect = 'APPEAR', num = '001', persist_time='S60', cmd='DEFAULT', last = True, center=True, time = False):
+    def mk_page(msg='', effect='APPEAR', num='001', persist_time='S60', cmd='DEFAULT', last=True, center=True,
+                time=False):
         return con(page_num=num,
                    display_ctrl='TIMED',
                    persist_time=persist_time,
@@ -209,7 +213,7 @@ class Protocol:
         c = con(pc_header=header,
                 serst=serst,
                 page=page
-        )
+                )
         ba_packet = bytearray(MESSAGE.build(c))
         ck = Protocol.build_checksum(ba_packet)
         ba_packet.append(ck)

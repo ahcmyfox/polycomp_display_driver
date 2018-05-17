@@ -1,25 +1,25 @@
-import sys
-import os.path
 import json
+import os.path
 
-class SentencesList():
 
+class SentencesList:
     JSON_PATH = os.path.join(os.path.dirname(__file__), 'sentences_save.json')
 
     def __init__(self, services):
         self.services = services
-        if (os.path.isfile(self.JSON_PATH)):
+        if os.path.isfile(self.JSON_PATH):
             with open(self.JSON_PATH, 'r') as sentences_file:
                 self.sentences = json.loads(sentences_file.read())
         else:
             self.sentences = []
 
     def get_sorted_sentences(self):
+        vote_max_idx = 0
         sorted_sentences = []
         for i in range(len(self.sentences)):
             vote_max = 0
             for j in range(len(self.sentences)):
-                if (self.sentences[j]['vote'] >= vote_max):
+                if self.sentences[j]['vote'] >= vote_max:
                     vote_max_idx = j
                     vote_max = self.sentences[j]['vote']
             sorted_sentences.append(self.sentences[vote_max_idx])
@@ -35,38 +35,39 @@ class SentencesList():
     def add(self, path, args):
         print args
         if ('sentence' in args) and ('person' in args) and ('date' in args):
-            self.sentences.append({'sentence' : args['sentence'], 'person' : args['person'], 'date' : args['date'], 'vote' : 0})
+            self.sentences.append(
+                {'sentence': args['sentence'], 'person': args['person'], 'date': args['date'], 'vote': 0})
             self.on_update()
         return self.get_sorted_sentences()
 
     def update(self, path, args):
-        if ('id' in args):
+        if 'id' in args:
             id = int(args['id'])
-            if ('sentence' in args):
+            if 'sentence' in args:
                 self.sentences[id]['sentence'] = args['sentence']
-            if ('person' in args):
+            if 'person' in args:
                 self.sentences[id]['person'] = args['person']
-            if ('date' in args):
+            if 'date' in args:
                 self.sentences[id]['date'] = args['date']
-            if ('vote' in args):
+            if 'vote' in args:
                 self.sentences[id]['vote'] = args['vote']
             self.on_update()
         return self.get_sorted_sentences()
 
     def delete(self, path, args):
-        if ('id' in args):
+        if 'id' in args:
             self.sentences.pop(int(args['id']))
             self.on_update()
         return self.get_sorted_sentences()
 
     def vote(self, path, args):
-        if ('id' in args):
-            self.sentences[int(args['id'])]['vote'] += 1 ;
+        if 'id' in args:
+            self.sentences[int(args['id'])]['vote'] += 1;
             self.on_update()
         return self.get_sorted_sentences()
 
     def get(self, path, args):
-        if ('id' in args):
+        if 'id' in args:
             return json.dumps(self.sentences[args['id']])
         else:
             return self.get_sorted_sentences()
@@ -78,4 +79,3 @@ class SentencesList():
             for i in range(int(sentence['vote'])):
                 serialize.append(serialized)
         return serialize
-

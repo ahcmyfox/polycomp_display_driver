@@ -1,12 +1,8 @@
-import sys
-import os.path
-import json
-
 class CIAlert():
 
     def __init__(self, services):
         self.services = services
-        self.message  = ""
+        self.message = ""
 
     def add(self, path, args):
         if ('sentence' in args) and ('person' in args) and ('date' in args):
@@ -28,4 +24,3 @@ class CIAlert():
 
     def get_message(self):
         return self.message
-

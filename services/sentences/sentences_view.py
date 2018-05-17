@@ -1,8 +1,7 @@
-import sys
 import os.path
 
-class SentencesView():
 
+class SentencesView():
     VIEW_PATH = os.path.join(os.path.dirname(__file__), 'index.html')
 
     def __init__(self, services):
@@ -23,4 +22,3 @@ class SentencesView():
     def get(self, path, args):
         with open(self.VIEW_PATH, 'r') as content_file:
             return content_file.read()
-
