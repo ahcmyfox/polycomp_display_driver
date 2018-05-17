@@ -1,12 +1,18 @@
 #!/usr/bin/env python
-import sys
-from   time import sleep
+from time import sleep
+
 import arrow
 
-class Clock():
 
-    def get_now(self):
+class Clock:
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_now():
         return arrow.now().format('HH:mm:ss')
+
 
 if __name__ == '__main__':
     clock = Clock()

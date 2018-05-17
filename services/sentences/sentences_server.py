@@ -5,13 +5,10 @@ import time
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
 from urlparse import urlparse
-
 from service_provider import ServicesProvider
-
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
-
 
 class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
@@ -30,7 +27,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_GET(path, args)
 
-        if contents != False:
+        if contents:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
@@ -55,7 +52,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_POST(self.path, args)
 
-        if (contents != False):
+        if contents:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
@@ -80,7 +77,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_DELETE(self.path, args)
 
-        if (contents != False):
+        if contents:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
@@ -105,7 +102,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_PATCH(self.path, args)
 
-        if (contents != False):
+        if contents:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
@@ -130,14 +127,13 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_PUT(self.path, args)
 
-        if (contents != False):
+        if contents:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
         else:
             self.send_response(404)
             self.end_headers()
-
 
 class SentencesServer(ThreadedHTTPServer, object):
 
