@@ -9,7 +9,7 @@ You can stop it with the following command :
 Install Pipenv
 
 ```
-pip install pipenv
+python -m pip install pipenv
 pipenv install
 ```
 
