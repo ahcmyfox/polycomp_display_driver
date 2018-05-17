@@ -3,10 +3,12 @@ import sys
 import threading
 import time
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
 from urlparse import urlparse
-
 from service_provider import ServicesProvider
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
 
 class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
@@ -133,8 +135,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-
-class SentencesServer(HTTPServer, object):
+class SentencesServer(ThreadedHTTPServer, object):
 
     def __init__(self, port, update_callback=None):
         super(SentencesServer, self).__init__(('0.0.0.0', port), SentencesHTTPHandler)
