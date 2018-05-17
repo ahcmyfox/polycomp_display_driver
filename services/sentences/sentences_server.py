@@ -1,16 +1,23 @@
-import  sys
-from    BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from    urlparse import urlparse, parse_qs
-import  cgi
-from    service_provider import ServicesProvider
-import  time
-import  threading
+import cgi
+import sys
+import threading
+import time
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
+from urlparse import urlparse
+
+from service_provider import ServicesProvider
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
 
 class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        path  = urlparse(self.path).path
+        path = urlparse(self.path).path
         print("GET " + path)
 
         query = urlparse(self.path).query
@@ -23,7 +30,7 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
         sp = ServicesProvider()
         contents = sp.get('router').do_GET(path, args)
 
-        if (contents != False):
+        if contents != False:
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
@@ -31,16 +38,15 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-
     def do_POST(self):
 
         print("Just received a POST request")
 
-        form = cgi.FieldStorage(fp      = self.rfile,
-                                headers = self.headers,
-                                environ = {'REQUEST_METHOD' : 'POST',
-                                           'CONTENT_TYPE' : self.headers['Content-Type'],
-                                           })
+        form = cgi.FieldStorage(fp=self.rfile,
+                                headers=self.headers,
+                                environ={'REQUEST_METHOD': 'POST',
+                                         'CONTENT_TYPE': self.headers['Content-Type'],
+                                         })
         args = {}
 
         for i in form:
@@ -57,16 +63,15 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-
     def do_DELETE(self):
 
         print("Just received a DELETE request")
 
-        form = cgi.FieldStorage(fp      = self.rfile,
-                                headers = self.headers,
-                                environ = {'REQUEST_METHOD' : 'POST',
-                                           'CONTENT_TYPE' : self.headers['Content-Type'],
-                                           })
+        form = cgi.FieldStorage(fp=self.rfile,
+                                headers=self.headers,
+                                environ={'REQUEST_METHOD': 'POST',
+                                         'CONTENT_TYPE': self.headers['Content-Type'],
+                                         })
         args = {}
 
         for i in form:
@@ -87,11 +92,11 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
         print("Just received a PATCH request")
 
-        form = cgi.FieldStorage(fp      = self.rfile,
-                                headers = self.headers,
-                                environ = {'REQUEST_METHOD' : 'PATCH',
-                                           'CONTENT_TYPE' : self.headers['Content-Type'],
-                                           })
+        form = cgi.FieldStorage(fp=self.rfile,
+                                headers=self.headers,
+                                environ={'REQUEST_METHOD': 'PATCH',
+                                         'CONTENT_TYPE': self.headers['Content-Type'],
+                                         })
         args = {}
 
         for i in form:
@@ -112,11 +117,11 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
 
         print("Just received a PUT request")
 
-        form = cgi.FieldStorage(fp      = self.rfile,
-                                headers = self.headers,
-                                environ = {'REQUEST_METHOD' : 'PUT',
-                                           'CONTENT_TYPE' : self.headers['Content-Type'],
-                                           })
+        form = cgi.FieldStorage(fp=self.rfile,
+                                headers=self.headers,
+                                environ={'REQUEST_METHOD': 'PUT',
+                                         'CONTENT_TYPE': self.headers['Content-Type'],
+                                         })
         args = {}
 
         for i in form:
@@ -133,15 +138,16 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-class SentencesServer(HTTPServer, object):
 
-    def __init__(self, port, update_callback = None):
+class SentencesServer(ThreadedHTTPServer, object):
+
+    def __init__(self, port, update_callback=None):
         super(SentencesServer, self).__init__(('0.0.0.0', port), SentencesHTTPHandler)
         self.sp = ServicesProvider(self)
         self.update_callback = update_callback
 
     def start(self):
-        thread = threading.Thread(target = self.serve_forever)
+        thread = threading.Thread(target=self.serve_forever)
         thread.daemon = True
         thread.start()
 
@@ -158,9 +164,11 @@ class SentencesServer(HTTPServer, object):
     def get_ci_alert(self):
         return self.sp.get('ci_alert').get_message()
 
+
 def on_update(content):
     print "SENTENCES UPDATE"
     print content
+
 
 if __name__ == "__main__":
     server = SentencesServer(8000, on_update)
