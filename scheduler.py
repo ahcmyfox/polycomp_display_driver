@@ -25,9 +25,9 @@ def display_sliding_and_delay(display, message):
 def display_clock(display, clock, duration):
     previous = ""
     count = 0
-    while (count < duration):
+    while count < duration:
         message = 'Il est {}'.format(clock.get_now())
-        if (message != previous):
+        if message != previous:
             count = count + 1
             previous = message
             print message
@@ -80,19 +80,19 @@ def display_map(display, map):
 def schedule_messages(display, server):
     alert = server.get_ci_alert()
     m = randint(0, 5)
-    if (len(alert) > 0):
+    if len(alert) > 0:
         display_alert(display, alert)
-    elif (m == 0):
+    elif m == 0:
         display_clock(display, clock, 6)
-    elif (m == 1):
+    elif m == 1:
         display_weather(display, weather)
-    elif (m == 2):
+    elif m == 2:
         display_saint(display, saints)
-    elif (m == 3):
+    elif m == 3:
         display_temperature(display, temperature)
-    elif (m == 4):
+    elif m == 4:
         display_map(display, map)
-    elif (m == 5):
+    elif m == 5:
         sentences = server.get_sentences()
         if len(sentences) > 0:
             s = randint(0, len(sentences) - 1)
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     server.start()
 
     try:
-        while (True):
+        while True:
             schedule_messages(display, server)
 
     except KeyboardInterrupt:

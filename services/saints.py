@@ -1157,7 +1157,11 @@ saints_list = [
 
 class Saints:
 
-    def get_current(self):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_current():
 
         message = ""
         today_saints = []

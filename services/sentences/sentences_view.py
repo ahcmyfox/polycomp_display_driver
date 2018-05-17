@@ -1,22 +1,26 @@
 import os.path
 
 
-class SentencesView():
+class SentencesView:
     VIEW_PATH = os.path.join(os.path.dirname(__file__), 'index.html')
 
     def __init__(self, services):
         self.services = services
 
-    def add(self, path, args):
+    @staticmethod
+    def add(path, args):
         return False
 
-    def update(self, path, args):
+    @staticmethod
+    def update(path, args):
         return False
 
-    def delete(self, path, args):
+    @staticmethod
+    def delete(path, args):
         return False
 
-    def vote(self, path, args):
+    @staticmethod
+    def vote(path, args):
         return False
 
     def get(self, path, args):

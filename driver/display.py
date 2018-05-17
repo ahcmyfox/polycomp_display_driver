@@ -5,13 +5,10 @@ import serial
 from protocol import Protocol
 
 
-class Display():
+class Display:
     addr = 1;
 
     def __init__(self, port):
-        self.port = port
-
-    def open(self):
         self.ser = serial.Serial(self.port,
                                  baudrate=9600,
                                  parity=serial.PARITY_NONE,
@@ -22,6 +19,9 @@ class Display():
                                  rtscts=False,
                                  dsrdtr=False,
                                  xonxoff=False)
+        self.port = port
+
+    def open(self):
         self.ser.flushInput()
         self.ser.flushOutput()
         print "Opening serial port " + self.ser.name  # check which port was really used

@@ -5,21 +5,22 @@ import arrow
 from sensor.DS18B20 import DS18B20
 
 
-class Temperature():
+class Temperature:
     UPDATE_INTERVAL_min = 1
 
     def __init__(self):
+        self.current = 'TEMPERATURE UPDATE ERROR'
+        self.last_update = arrow.now()
         self.ds = DS18B20('28-000004b422a2')
         self.update()
 
     def update(self):
         print ('Updating temperature...')
-        self.last_update = arrow.now()
         try:
             t = self.ds.temperature()  # read temperature
             self.current = "Temperature : {} °C".format(t.C)
         except:
-            self.current = 'TEMPERATURE UPDATE ERROR'
+            pass
 
     def get_current(self):
         delta = arrow.now() - self.last_update

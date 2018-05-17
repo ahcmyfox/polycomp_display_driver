@@ -6,7 +6,11 @@ import arrow
 
 class Clock:
 
-    def get_now(self):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_now():
         return arrow.now().format('HH:mm:ss')
 
 

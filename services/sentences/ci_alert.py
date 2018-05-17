@@ -1,4 +1,4 @@
-class CIAlert():
+class CIAlert:
 
     def __init__(self, services):
         self.services = services
@@ -19,7 +19,8 @@ class CIAlert():
     def get(self, path, args):
         return self.message
 
-    def serialize(self, args):
+    @staticmethod
+    def serialize(args):
         return '{} {} {}'.format(args['person'], args['date'], args['sentence'])
 
     def get_message(self):

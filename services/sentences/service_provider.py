@@ -28,13 +28,13 @@ class ServicesProvider(object):
         self.services['ci_alert'] = CIAlert(self)
 
     def has(self, service):
-        if (service in self.services):
+        if service in self.services:
             return True
         else:
             return False
 
     def get(self, service):
-        if (self.has(service)):
+        if self.has(service):
             return self.services[service]
         else:
             return False
