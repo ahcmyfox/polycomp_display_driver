@@ -1,5 +1,6 @@
 import json
 import os.path
+import string
 
 
 class SentencesList:
@@ -32,11 +33,20 @@ class SentencesList:
             sentences_file.write(json.dumps(self.sentences))
         self.services.get('server').on_update()
 
+    def clean_string(self, to_clean):
+        printable = set(string.printable)
+        for c in to_clean:
+            if c not in printable:
+                to_clean = to_clean.replace(c, '?')
+        return to_clean
+
     def add(self, path, args):
         print args
         if ('sentence' in args) and ('person' in args) and ('date' in args):
-            self.sentences.append(
-                {'sentence': args['sentence'], 'person': args['person'], 'date': args['date'], 'vote': 0})
+            args['sentence'] = self.clean_string(args['sentence'])
+            args['person'] = self.clean_string(args['person'])
+            args['date'] = self.clean_string(args['date'])
+            self.sentences.append({'sentence' : args['sentence'], 'person' : args['person'], 'date' : args['date'], 'vote' : 0})
             self.on_update()
         return self.get_sorted_sentences()
 
@@ -44,10 +54,13 @@ class SentencesList:
         if 'id' in args:
             id = int(args['id'])
             if 'sentence' in args:
+                args['sentence'] = self.clean_string(args['sentence'])
                 self.sentences[id]['sentence'] = args['sentence']
             if 'person' in args:
+                args['person'] = self.clean_string(args['person'])
                 self.sentences[id]['person'] = args['person']
             if 'date' in args:
+                args['date'] = self.clean_string(args['date'])
                 self.sentences[id]['date'] = args['date']
             if 'vote' in args:
                 self.sentences[id]['vote'] = args['vote']
