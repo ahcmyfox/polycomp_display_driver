@@ -6,6 +6,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
 from urlparse import urlparse
 from service_provider import ServicesProvider
+from sentences_exceptions import *
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
@@ -24,116 +25,118 @@ class SentencesHTTPHandler(BaseHTTPRequestHandler):
             for qc in query.split("&"):
                 args[qc.split("=")[0]] = qc.split("=")[1]
 
-        sp = ServicesProvider()
-        contents = sp.get('router').do_GET(path, args)
-
-        if contents:
+        sp = ServicesProvider(None)
+        
+        try:
+            contents = sp.get('router').route('GET', path, args)
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
-        else:
-            self.send_response(404)
+        except RestfulServerException as e:
+            self.send_response(e.get_code())
             self.end_headers()
+            self.wfile.write(e.get_message())
 
     def do_POST(self):
 
+        path = urlparse(self.path).path
         print("Just received a POST request")
 
-        form = cgi.FieldStorage(fp=self.rfile,
-                                headers=self.headers,
-                                environ={'REQUEST_METHOD': 'POST',
-                                         'CONTENT_TYPE': self.headers['Content-Type'],
-                                         })
         args = {}
 
-        for i in form:
-            args[i] = form.getvalue(i)
+        if int(self.headers['Content-Length']) > 0:
+            form = cgi.FieldStorage(fp=self.rfile,
+                                    headers=self.headers,
+                                    environ={'REQUEST_METHOD': 'POST',
+                                            'CONTENT_TYPE': self.headers['Content-Type'],
+                                            })
+            for i in form:
+                args[i] = form.getvalue(i)
 
-        sp = ServicesProvider()
-        contents = sp.get('router').do_POST(self.path, args)
+        sp = ServicesProvider(None)
 
-        if contents:
+        try:
+            contents = sp.get('router').route('POST', path, args)
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
-        else:
-            self.send_response(404)
+        except RestfulServerException as e:
+            self.send_response(e.get_code())
             self.end_headers()
+            self.wfile.write(e.get_message())
 
     def do_DELETE(self):
 
+        path = urlparse(self.path).path
         print("Just received a DELETE request")
 
-        form = cgi.FieldStorage(fp=self.rfile,
-                                headers=self.headers,
-                                environ={'REQUEST_METHOD': 'POST',
-                                         'CONTENT_TYPE': self.headers['Content-Type'],
-                                         })
-        args = {}
+        sp = ServicesProvider(None)
 
-        for i in form:
-            args[i] = form.getvalue(i)
-
-        sp = ServicesProvider()
-        contents = sp.get('router').do_DELETE(self.path, args)
-
-        if contents:
+        try:
+            contents = sp.get('router').route('DELETE', path, {})
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
-        else:
-            self.send_response(404)
+        except RestfulServerException as e:
+            self.send_response(e.get_code())
             self.end_headers()
+            self.wfile.write(e.get_message())
 
     def do_PATCH(self):
 
+        path = urlparse(self.path).path
         print("Just received a PATCH request")
 
-        form = cgi.FieldStorage(fp=self.rfile,
-                                headers=self.headers,
-                                environ={'REQUEST_METHOD': 'PATCH',
-                                         'CONTENT_TYPE': self.headers['Content-Type'],
-                                         })
         args = {}
 
-        for i in form:
-            args[i] = form.getvalue(i)
+        if int(self.headers['Content-Length']) > 0:
+            form = cgi.FieldStorage(fp=self.rfile,
+                                    headers=self.headers,
+                                    environ={'REQUEST_METHOD': 'POST',
+                                            'CONTENT_TYPE': self.headers['Content-Type'],
+                                            })
+            for i in form:
+                args[i] = form.getvalue(i)
 
-        sp = ServicesProvider()
-        contents = sp.get('router').do_PATCH(self.path, args)
+        sp = ServicesProvider(None)
 
-        if contents:
+        try:
+            contents = sp.get('router').route('PATCH', path, args)
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
-        else:
-            self.send_response(404)
+        except RestfulServerException as e:
+            self.send_response(e.get_code())
             self.end_headers()
+            self.wfile.write(e.get_message())
 
     def do_PUT(self):
 
+        path = urlparse(self.path).path
         print("Just received a PUT request")
 
-        form = cgi.FieldStorage(fp=self.rfile,
-                                headers=self.headers,
-                                environ={'REQUEST_METHOD': 'PUT',
-                                         'CONTENT_TYPE': self.headers['Content-Type'],
-                                         })
         args = {}
 
-        for i in form:
-            args[i] = form.getvalue(i)
+        if int(self.headers['Content-Length']) > 0:
+            form = cgi.FieldStorage(fp=self.rfile,
+                                    headers=self.headers,
+                                    environ={'REQUEST_METHOD': 'POST',
+                                            'CONTENT_TYPE': self.headers['Content-Type'],
+                                            })
+            for i in form:
+                args[i] = form.getvalue(i)
 
-        sp = ServicesProvider()
-        contents = sp.get('router').do_PUT(self.path, args)
+        sp = ServicesProvider(None)
 
-        if contents:
+        try:
+            contents = sp.get('router').route('PUT', path, args)
             self.send_response(200)
             self.end_headers()
             self.wfile.write(contents)
-        else:
-            self.send_response(404)
+        except RestfulServerException as e:
+            self.send_response(e.get_code())
             self.end_headers()
+            self.wfile.write(e.get_message())
 
 class SentencesServer(ThreadedHTTPServer, object):
 
@@ -163,8 +166,6 @@ class SentencesServer(ThreadedHTTPServer, object):
 
 def on_update(content):
     print "SENTENCES UPDATE"
-    print content
-
 
 if __name__ == "__main__":
     server = SentencesServer(8000, on_update)

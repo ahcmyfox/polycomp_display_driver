@@ -46,6 +46,17 @@ $(document).ready(function()
         }
     });
 
+    window.setInterval(function() {
+        $.ajax({
+            url: '/sentences',
+            type: 'GET',
+            success: function(result) 
+            {
+                update_list(jQuery.parseJSON(result));
+            }
+        });
+    }, 5000);
+
     /** DELETE **/
 
     $(document).on('click','.glyphicon-remove', function()
@@ -53,12 +64,18 @@ $(document).ready(function()
         var sentence_id = $(this).attr('id').replace('delete_', '');
 
         $.ajax({
-            url: '/sentences',
+            url: '/sentences/' + sentence_id,
             type: 'DELETE',
-            data: {"id": sentence_id},
             success: function(result) 
             {
-                update_list(jQuery.parseJSON(result));
+                $.ajax({
+                    url: '/sentences',
+                    type: 'GET',
+                    success: function(result) 
+                    {
+                        update_list(jQuery.parseJSON(result));
+                    }
+                });
             },
             error : function(result) 
             {
@@ -69,33 +86,26 @@ $(document).ready(function()
         return false;
     });
 
-    /** PATCH **/
+    /** POST vote **/
 
     $(document).on('click','.glyphicon-thumbs-up', function()
     {
         var sentence_id = $(this).attr('id').replace('vote_', '');
 
         $.ajax({
-            url: '/sentences',
-            type: 'GET',
+            url: '/sentences/' + sentence_id + '/vote',
+            type: 'POST',
             success: function(result) 
             {
-                current_vote = Number(jQuery.parseJSON(result)[sentence_id]['vote']);
-
                 $.ajax({
                     url: '/sentences',
-                    type: 'PATCH',
-                    data: {"id": sentence_id, "vote" : current_vote + 1},
+                    type: 'GET',
                     success: function(result) 
                     {
                         update_list(jQuery.parseJSON(result));
-                        display_popup('success', 'Votre vote a bien été pris en compte');
-                    },
-                    error : function(result) 
-                    {
-                        display_popup('danger', 'Erreur sur vote');
                     }
                 });
+                display_popup('success', 'Votre vote a ete pris en compte');
             },
             error : function(result) 
             {

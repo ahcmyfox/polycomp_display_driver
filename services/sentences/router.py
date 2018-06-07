@@ -1,41 +1,73 @@
 import re
-
+from sentences_exceptions import *
 
 class Router:
-    routes = [{'path': '^\/.+\.[png|jpg|css|js]', 'service': 'sentences_ressource'},
-              {'path': '^\/sentences$', 'service': 'sentences_list'},
-              {'path': '^\/ci_alert$', 'service': 'ci_alert'},
-              {'path': '^\/$', 'service': 'sentences_view'}]
+    routes = [  {
+                    'path': '^\/.+\.[png|jpg|css|js]', 
+                    'service': 'sentences_ressource',
+                    'endpoints': {
+                                    'GET' : 'get'
+                                 }
+                },
+                {
+                    'path': '^\/sentences$', 
+                    'service': 'sentences_list',
+                    'endpoints': {
+                                    'GET'    : 'get_all',
+                                    'POST'   : 'add'
+                                 }
+                },
+                {
+                    'path': '\/sentences\/(?P<id>[0-9]+)$', 
+                    'service': 'sentences_list',
+                    'endpoints': {
+                                    'GET'    : 'get',
+                                    'DELETE' : 'delete',
+                                    'PATCH'  : 'update',
+                                    'PUT'    : 'update'
+                                 }
+                },
+                {
+                    'path': '\/sentences\/(?P<id>[0-9]+)\/vote$', 
+                    'service': 'sentences_list',
+                    'endpoints': {
+                                    'POST' : 'vote'
+                                 }
+                },
+                {
+                    'path': '^\/ci_alert$', 
+                    'service': 'ci_alert',
+                    'endpoints': {
+                                    'GET'    : 'get',
+                                    'POST'   : 'add',
+                                    'DELETE' : 'delete'
+                                 }
+                },
+                {
+                    'path': '^\/$', 
+                    'service': 'sentences_view',
+                    'endpoints': {
+                                    'GET' : 'get'
+                                 }
+                }
+            ]
 
     def __init__(self, services):
         self.services = services
 
-    def do_GET(self, path, args):
+    def route(self, method, path, args):
         for route in self.routes:
-            if re.match(route['path'], path):
-                return self.services.get(route['service']).get(path, args)
-        return False
-
-    def do_POST(self, path, args):
-        for route in self.routes:
-            if re.match(route['path'], path):
-                return self.services.get(route['service']).add(path, args)
-        return False
-
-    def do_DELETE(self, path, args):
-        for route in self.routes:
-            if re.match(route['path'], path):
-                return self.services.get(route['service']).delete(path, args)
-        return False
-
-    def do_PATCH(self, path, args):
-        for route in self.routes:
-            if re.match(route['path'], path):
-                return self.services.get(route['service']).update(path, args)
-        return False
-
-    def do_PUT(self, path, args):
-        for route in self.routes:
-            if re.match(route['path'], path):
-                return self.services.get(route['service']).update(path, args)
-        return False
+            url_args = re.match(route['path'], path)
+            if url_args:
+                if method in route['endpoints']:
+                    try:
+                        return getattr(self.services.get(route['service']), route['endpoints'][method])(path, args, **url_args.groupdict())
+                    except AttributeError:
+                        raise RestfulServerBadRequest()
+                    except RestfulServerException as e:
+                        raise e
+                    except Exception:
+                        raise RestfulServerInternalServerError()
+                else:
+                    raise RestfulServerMethodNotAllowed()
+        raise RestfulServerNotFound()

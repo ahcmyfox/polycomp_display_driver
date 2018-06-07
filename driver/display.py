@@ -6,10 +6,10 @@ from protocol import Protocol
 
 
 class Display:
-    addr = 1;
+    addr = 1
 
     def __init__(self, port):
-        self.ser = serial.Serial(self.port,
+        self.ser = serial.Serial(port,
                                  baudrate=9600,
                                  parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,

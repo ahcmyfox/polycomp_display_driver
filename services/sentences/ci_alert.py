@@ -9,9 +9,6 @@ class CIAlert:
             self.message = self.serialize(args)
         return self.message
 
-    def update(self, path, args):
-        return self.add(path, args)
-
     def delete(self, path, args):
         self.message = ""
         return self.message
