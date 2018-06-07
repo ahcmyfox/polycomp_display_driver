@@ -9,6 +9,7 @@ class Display:
     addr = 1
 
     def __init__(self, port):
+        self.port = port
         self.ser = serial.Serial(port,
                                  baudrate=9600,
                                  parity=serial.PARITY_NONE,
@@ -19,7 +20,6 @@ class Display:
                                  rtscts=False,
                                  dsrdtr=False,
                                  xonxoff=False)
-        self.port = port
 
     def open(self):
         self.ser.flushInput()
@@ -76,9 +76,7 @@ class Display:
 
     def send(self, buf):
         print "Sending " + buf.encode("hex")
-        self.open()
         self.ser.write(buf)
-        self.close()
 
 
 def display_test():

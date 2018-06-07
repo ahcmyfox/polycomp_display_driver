@@ -18,7 +18,7 @@ class Temperature:
         print ('Updating temperature...')
         try:
             t = self.ds.temperature()  # read temperature
-            self.current = "Temperature : {} °C".format(t.C)
+            self.current = "Temperature : {} 'C".format(t.C)
         except:
             pass
 

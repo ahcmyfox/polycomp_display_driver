@@ -24,7 +24,7 @@ class Map:
             jsonstr = urllib2.urlopen(url).read()
             content = json.loads(jsonstr)
             duration = content['routes'][0]['legs'][0]['duration_in_traffic']['text']
-            self.current = 'Sortie de Labege : {}'.format(duration)
+            self.current = 'Sortie Labege : {}'.format(duration)
         except:
             pass
 
