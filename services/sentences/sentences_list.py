@@ -1,11 +1,16 @@
 import json
 import os.path
+import glob
+import calendar
+import time
 import string
 from sentences_exceptions import *
 
 class SentencesList:
 
-    JSON_PATH = os.path.join(os.path.dirname(__file__), 'sentences_save.json')
+    JSON_FILE = "sentences_save.json"
+    DIR_PATH  = os.path.dirname(os.path.realpath(__file__))
+    JSON_PATH = os.path.join(DIR_PATH, JSON_FILE)
 
     def __init__(self, services):
         self.services = services
@@ -28,10 +33,30 @@ class SentencesList:
             self.sentences.pop(vote_max_idx)
         self.sentences = sorted_sentences
 
+    def backup_sentences(self):
+        # Write new backup file
+        filename = self.JSON_PATH + "." + str(calendar.timegm(time.gmtime())) + ".bak"
+        with open(filename, "w") as backup_file:
+            backup_file.write(json.dumps(self.sentences))
+
+        ### Keep at most 5 backup files
+        os.chdir(self.DIR_PATH)
+        # list backup files
+        backup_files = [f for f in glob.glob(self.JSON_FILE + ".*.bak")]
+        # sort files by date (newer ones first)
+        backup_files.sort(key=lambda x: os.stat(x).st_mtime, reverse=True)
+
+        for file in backup_files[5:]:
+            os.remove(file)
+
     def on_update(self):
+        print("Updating sentences")
         with open(self.JSON_PATH, 'w') as sentences_file:
             sentences_file.write(json.dumps(self.sentences))
+
         self.services.get('server').on_update()
+
+        self.backup_sentences()
 
     def clean_string(self, to_clean):
         printable = set(string.printable)
@@ -71,7 +96,7 @@ class SentencesList:
             self.on_update()
 
             return json.dumps(self.sentences[id])
-        
+
         else:
             raise RestfulServerNotFound()
 
